@@ -1,0 +1,56 @@
+/* vh (viewheight) and vw (viewwidth) for responsive design */
+
+  html {
+    font-family: sans-serif;
+}
+
+body {
+    background-color: black;
+    margin: 0;
+}
+
+.highlight {
+    color: rebeccapurple;
+}
+
+header {
+    background-color: teal;
+    color: wheat;
+    text-align: center;
+}
+
+#dateLine {
+    font-size: 6vh; /* 1vh = 1% of the viewport height */
+    padding: 1.2vh;   /* keep margins and paddings in childs */
+    margin: 0px;
+}
+
+#hourLine {
+    font-size: 5vh;
+    padding: 1.2vh;
+    margin: 0px;
+}
+
+/* Messages class */
+
+.messages {
+    font-size: 4vw;
+    padding-left: 2vw;
+    color: wheat;
+}
+
+footer {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    color: wheat;
+    
+}
+#copyRight {
+    font-size: 0.8em;
+    text-align: right;
+    padding-right: 10px;
+    /* border-top: solid wheat 1px; */
+}
