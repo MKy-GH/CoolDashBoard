@@ -10,7 +10,7 @@ body {
 }
 
 .highlight {
-    color: orangered;
+    color: orange;
 }
 
 header {
@@ -19,23 +19,21 @@ header {
     text-align: center;
 }
 
-#dayLine {
+#firstLine {
     font-size: 6vh; /* 1vh = 1% of the viewport height */
     padding: 1.2vh;   /* keep margins and paddings in childs */
     margin: 0px;
 }
 
-#dateLine {
+#secondLine {
     font-size: 5vh;
     padding: 1.2vh;
     margin: 0px;
 }
 
-/* Messages class */
-
-.messages {
+#messages {
     font-size: 4vw;
-    padding-left: 2vw;
+    padding-left: 3vw;
     color: wheat;
 }
 

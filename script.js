@@ -4,23 +4,20 @@ var yearMonths = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLE
     "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
 var dayMoments = ["matin", "avant-midi", "après-midi", "soir"];
 
-
-var msg, txt, nbMsg, i;
-var refreshId = null;
-
 var GoogleAuth; // shortcut for API
-const fetchInterval = 5 * 60000; // Messages refersh interval, convert min into ms
-
-handlePage();
-// handleMain();
 
 
-function handlePage() {
+
+/**
+ * Header composition and display
+ */
+loopHeader();
+
+function loopHeader() {
     const headInterval = 1 * 60000; // Header refersh interval in minutes
     dispHeader();
     headerIntervalID = setInterval(dispHeader, headInterval);
 }
-
 function dispHeader() {
     // handle the Header part of the page
 
@@ -37,39 +34,17 @@ function dispHeader() {
     else if (hour > 13) { dayMoment = dayMoments[2]; }
     if (Number(min) < 10) { min = "0" + min; }
 
-    // Day line
-    document.getElementById("dayLine").innerHTML =
-    `<span class="highlight">${weekDays[day]} ${hour}:${min}</span> ${dayMoment}`;
+    // 1st line
+    document.getElementById("firstLine").innerHTML =
+        `<span class="highlight">${weekDays[day]}</span> ${dayMoment}`;
 
-    // Date line
-    document.getElementById("dateLine").innerHTML =
-    `${date} ${yearMonths[month]} ${year}`
+    // 2nd line
+    document.getElementById("secondLine").innerHTML =
+        `<span class="highlight">${hour}:${min}</span> ${date} ${yearMonths[month]} ${year}`
     // hour + ":" + min + ":" + sec + " " + dayMoment;  // to debug with seconds
 }
 
 
-// messages generation
-nbMsg = 3;
-msg = ["This screen width : " + screen.availWidth];
-for (i = 1; i < nbMsg; i++) {
-    msg.push("Voici le message " + i);
-}
-
-// refreshPage();
-// refereshId = setInterval(refreshPage, 1000);
-
-function refreshPage() {
-    const d = new Date(), h = d.getHours(); m = d.getMinutes();
-
-    // message display (may not be supported everywhere)
-    txt = msg.reduce(myFunction);
-    document.getElementById("msgSection").innerHTML = txt;
-
-    function myFunction(total, value) {
-        return total + "<p>" + value + "</p>";
-    }
-
-}
 
 function handleClientLoad() {
     // Loads the API's client and auth2 modules
@@ -105,29 +80,13 @@ function dispAfterSignIn(isSignedIn) {
 }
 
 function loopMessages() {
-    listUpcomingEvents();
-    const createClock = setInterval(listUpcomingEvents, fetchInterval);
+    const fetchInterval = 5 * 60000; // Messages refersh interval, convert min into ms
+    dispMessages();
+    const createClock = setInterval(dispMessages, fetchInterval);
 }
 
-/**
- * Append a pre element to the body containing the given message
- * as its text node. Used to display the results of the API call.
- *
- * @param {string} message Text to be placed in pre element.
- */
-function appendPre(message) {
-    var pre = document.getElementById('content');
-    var textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
-}
 
-/**
- * Print the summary and start datetime/date of the next ten events in
- * the authorized user's calendar. If no events are found an
- * appropriate message is printed.
- */
-
-function listUpcomingEvents() {
+function dispMessages() {
 
     // variable required to get the active events
     var tMin = new Date();
@@ -143,26 +102,22 @@ function listUpcomingEvents() {
         'timeMin': tMin.toISOString(), // mky: Date has to be an object with new
         'timeMax': tMax.toISOString(),
     }).then(function (response) {
-        var events = response.result.items;  // MKy: this is the array of Events
-        document.getElementById('content').innerHTML = "check of : " + tMin.toLocaleTimeString() + "\n";
-
+        var events = response.result.items;  // MKy: The array of Event-objects
+        document.getElementById("messages").innerHTML ="";
+        
         if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
-                var event = events[i];
-                appendPre(event.summary)
+                var para = document.createElement("P");
+                para.innerHTML = events[i].summary;
+                document.getElementById("messages").appendChild(para);
             }
-        } else {
-            appendPre('No upcoming events found.');
         }
     });
 }
 
 
-// mettre en page (sans photo et calendar?)
+// events is an array of objects. try to sort by endTime (cannot use endTime in the list)
 // controler les overflow (si pas de place sur la page)
-// ajouter lien à gmail calendar
-// voir comment rafraichir heure, les messages : auto dans head (rarement pour sécurité), 
-//      horloge Java pour la montre, une autre pour les messages (ou push)
 // Attention à mettre à jour les token
 // inverser les couleurs jour et nuit ou plus fréquent pour protéger l'écran
 // plus tard : utiliser le display:grid calendrier en haut à droite, gestion des langues et des photos, de la parole
