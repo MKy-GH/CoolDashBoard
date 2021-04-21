@@ -1,17 +1,52 @@
-// var d = new Date();
-// var h = d.getHours();
-var moment = "";
+// French version to be replaced with intl module
+var weekDays = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
+var yearMonths = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT",
+    "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
+var dayMoments = ["matin", "avant-midi", "après-midi", "soir"];
+
+
 var msg, txt, nbMsg, i;
 var refreshId = null;
 
-// French version
-var jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
-var mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
-    "septembre", "octobre", "novembre", "décembre"];
-var moments = ["du matin", "de l'avant-midi", "de l'après-midi", "du soir"];
-
-var GoogleAuth; // shortcut like above
+var GoogleAuth; // shortcut for API
 const fetchInterval = 5 * 60000; // Messages refersh interval, convert min into ms
+
+handlePage();
+// handleMain();
+
+
+function handlePage() {
+    const headInterval = 1 * 60000; // Header refersh interval in minutes
+    dispHeader();
+    headerIntervalID = setInterval(dispHeader, headInterval);
+}
+
+function dispHeader() {
+    // handle the Header part of the page
+
+    var now = new Date();
+    const year = now.getFullYear(), month = now.getMonth(), date = now.getDate();
+    const day = now.getDay(), hour = now.getHours(), sec = now.getSeconds();
+    var min = now.getMinutes(); // var because manipulated in the funtion
+    var dayMoment = "";
+
+    // day moment definition
+    if (hour < 9) { dayMoment = dayMoments[0]; }
+    else if (hour < 12) { dayMoment = dayMoments[1] }
+    else if (hour > 18) { dayMoment = dayMoments[3]; }
+    else if (hour > 13) { dayMoment = dayMoments[2]; }
+    if (Number(min) < 10) { min = "0" + min; }
+
+    // Day line
+    document.getElementById("dayLine").innerHTML =
+    `<span class="highlight">${weekDays[day]} ${hour}:${min}</span> ${dayMoment}`;
+
+    // Date line
+    document.getElementById("dateLine").innerHTML =
+    `${date} ${yearMonths[month]} ${year}`
+    // hour + ":" + min + ":" + sec + " " + dayMoment;  // to debug with seconds
+}
+
 
 // messages generation
 nbMsg = 3;
@@ -20,27 +55,11 @@ for (i = 1; i < nbMsg; i++) {
     msg.push("Voici le message " + i);
 }
 
-//window.onload = function() {openFullscreen()};
-refreshPage();
+// refreshPage();
 // refereshId = setInterval(refreshPage, 1000);
 
 function refreshPage() {
     const d = new Date(), h = d.getHours(); m = d.getMinutes();
-
-    // first header with day, month and year
-    document.getElementById("dateLine").innerHTML =
-        `<span class="highlight">${jours[d.getDay()]}</span> 
-    ${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
-
-    // second header with time and moment of the day
-    if (h < 9) { moment = moments[0]; }
-    else if (h < 12) { moment = moments[1] }
-    else if (h > 18) { moment = moments[3]; }
-    else if (h > 13) { moment = moments[2]; }
-    if (Number(m) < 10) { m = "0" + m; }
-    document.getElementById("hourLine").innerHTML =
-        "il est " + h + ":" + m + " " + moment;
-
 
     // message display (may not be supported everywhere)
     txt = msg.reduce(myFunction);
@@ -69,15 +88,15 @@ function initClient() {
     }).then(function () {
         GoogleAuth = gapi.auth2.getAuthInstance();
 
-        dispAfterSignIn (GoogleAuth.isSignedIn.get()); // check signin and start display
+        dispAfterSignIn(GoogleAuth.isSignedIn.get()); // check signin and start display
 
     }, function (error) {
         appendPre(JSON.stringify(error, null, 2));
     });
 }
 
-function dispAfterSignIn (isSignedIn) {
-//     // insure the first signin, then only display the list of messages
+function dispAfterSignIn(isSignedIn) {
+    //     // insure the first signin, then only display the list of messages
     if (!isSignedIn) {
         GoogleAuth.signIn().then(loopMessages);
     } else {

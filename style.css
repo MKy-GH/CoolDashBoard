@@ -10,7 +10,7 @@ body {
 }
 
 .highlight {
-    color: rebeccapurple;
+    color: orangered;
 }
 
 header {
@@ -19,13 +19,13 @@ header {
     text-align: center;
 }
 
-#dateLine {
+#dayLine {
     font-size: 6vh; /* 1vh = 1% of the viewport height */
     padding: 1.2vh;   /* keep margins and paddings in childs */
     margin: 0px;
 }
 
-#hourLine {
+#dateLine {
     font-size: 5vh;
     padding: 1.2vh;
     margin: 0px;
