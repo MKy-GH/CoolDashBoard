@@ -27,14 +27,15 @@
         <!-- messages sections -->
         <section class="messages">
             <p id="msgSection"></p>
+            <p id="content" style="white-space: pre-wrap;"></p>
         </section>
 
         <!-- image section for later use, use img to be able to tie a caption  -->
         <!-- <aside> -->
-            <!-- <figure> -->
-                <!-- <img src="Jubilaires.jpg" alt="picture of Véro and Mario" width="50%"> -->
-                <!-- <figcaption>Mario et Véronique</figcaption> -->
-            <!-- </figure> -->
+        <!-- <figure> -->
+        <!-- <img src="Jubilaires.jpg" alt="picture of Véro and Mario" width="50%"> -->
+        <!-- <figcaption>Mario et Véronique</figcaption> -->
+        <!-- </figure> -->
         <!-- </aside> -->
     </main>
 
@@ -45,6 +46,9 @@
 
     <!-- JS code supposed to be in the Header with defer. Put here for backward compatibility -->
     <script defer src="script.js"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+        onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
     <noscript>Sorry, your browser does not support JavaScript!</noscript>
 
 </body>
