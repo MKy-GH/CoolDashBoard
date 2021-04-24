@@ -32,19 +32,15 @@ function dispHeader() {
     else if (hour < 12) { dayMoment = dayMoments[1] }
     else if (hour > 18) { dayMoment = dayMoments[3]; }
     else if (hour > 13) { dayMoment = dayMoments[2]; }
-    if (Number(min) < 10) { min = "0" + min; }
 
-    // 1st line
-    document.getElementById("firstLine").innerHTML =
-        `<span class="highlight">${weekDays[day]}</span> ${dayMoment}`;
+    if (sec > 30) { min += 1; }
+    if (min < 10) { min = "0" + min; }
 
-    // 2nd line
-    document.getElementById("secondLine").innerHTML =
-        `<span class="highlight">${hour}:${min}</span> ${date} ${yearMonths[month]} ${year}`
-    // hour + ":" + min + ":" + sec + " " + dayMoment;  // to debug with seconds
+    document.getElementById("day").innerHTML = weekDays[day];
+    document.getElementById("date").innerHTML = `${date} ${yearMonths[month]} ${year}`;
+    document.getElementById("hour").innerHTML = `${hour}:${min}`;
+    document.getElementById("moment").innerHTML = dayMoment;
 }
-
-
 
 function handleClientLoad() {
     // Loads the API's client and auth2 modules
@@ -103,8 +99,8 @@ function dispMessages() {
         'timeMax': tMax.toISOString(),
     }).then(function (response) {
         var events = response.result.items;  // MKy: The array of Event-objects
-        document.getElementById("messages").innerHTML ="";
-        
+        document.getElementById("messages").innerHTML = "";
+
         if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
                 var para = document.createElement("P");

@@ -1,7 +1,7 @@
 /* vh (viewheight) and vw (viewwidth) for responsive design */
 
-  html {
-    font-family: sans-serif;
+html {
+    font-family: Verdana, Arial, sans-serif;
 }
 
 body {
@@ -9,31 +9,57 @@ body {
     margin: 0;
 }
 
-.highlight {
-    color: orange;
-}
+
+
+/*************************** 
+/    Header part 
+/**************************/ 
 
 header {
-    background-color: teal;
-    color: wheat;
+    display: flex;
     text-align: center;
 }
 
-#firstLine {
-    font-size: 6vh; /* 1vh = 1% of the viewport height */
-    padding: 1.2vh;   /* keep margins and paddings in childs */
-    margin: 0px;
+header > div {
+    flex: 1;
 }
 
-#secondLine {
-    font-size: 5vh;
+#day, #hour {
+    font-size: 9vh;
+    /* 1vh = 1% of the viewport height */
     padding: 1.2vh;
-    margin: 0px;
+      /* keep margins and paddings in childs */
+      /* margin: 0px; */
 }
 
+#day, #date {
+    background-color: darkblue;
+    color: wheat;
+}
+
+#hour, #moment {
+    background-color: wheat;
+    color: darkblue;
+}
+
+#date, #moment {
+    font-size: 3vh;
+    padding: 1.2vh;
+    /* margin: 0px; */
+}
+
+#date {
+    word-spacing: 1em;
+}
+
+
+/*************************** 
+/    Message part 
+/**************************/ 
 #messages {
     font-size: 4vw;
     padding-left: 3vw;
+    padding-right: 3vw;
     color: wheat;
 }
 
@@ -44,8 +70,8 @@ footer {
     right: 0;
     width: 100%;
     color: wheat;
-    
 }
+
 #copyRight {
     font-size: 0.8em;
     text-align: right;
