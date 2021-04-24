@@ -24,12 +24,12 @@ header > div {
     flex: 1;
 }
 
-#day, #hour {
+#day, #time {
     font-size: 9vh;
     /* 1vh = 1% of the viewport height */
+    text-transform: uppercase;
     padding: 1.2vh;
       /* keep margins and paddings in childs */
-      /* margin: 0px; */
 }
 
 #day, #date {
@@ -37,7 +37,7 @@ header > div {
     color: wheat;
 }
 
-#hour, #moment {
+#time, #moment {
     background-color: wheat;
     color: darkblue;
 }
@@ -45,7 +45,6 @@ header > div {
 #date, #moment {
     font-size: 3vh;
     padding: 1.2vh;
-    /* margin: 0px; */
 }
 
 #date {

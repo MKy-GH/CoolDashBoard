@@ -1,8 +1,6 @@
 // French version to be replaced with intl module
-var weekDays = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
-var yearMonths = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT",
-    "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
-var dayMoments = ["matin", "avant-midi", "après-midi", "soir"];
+var dateFormat = "de-CH";  // for tests. hopfully the machine format is ok
+var dayMoments = ["matin", "avant-midi", "midi", "après-midi", "soir"];
 
 var GoogleAuth; // shortcut for API
 
@@ -22,32 +20,49 @@ function dispHeader() {
     // handle the Header part of the page
 
     var now = new Date();
-    const year = now.getFullYear(), month = now.getMonth(), date = now.getDate();
-    const day = now.getDay(), hour = now.getHours(), sec = now.getSeconds();
-    var min = now.getMinutes(); // var because manipulated in the funtion
-    var dayMoment = "";
+    var day = now.toLocaleDateString(dateFormat, { weekday: "long" });
 
-    // day moment definition
-    if (hour < 9) { dayMoment = dayMoments[0]; }
-    else if (hour < 12) { dayMoment = dayMoments[1] }
-    else if (hour > 18) { dayMoment = dayMoments[3]; }
-    else if (hour > 13) { dayMoment = dayMoments[2]; }
-
-    if (sec > 30) { min += 1; }
-    if (min < 10) { min = "0" + min; }
-
-    document.getElementById("day").innerHTML = weekDays[day];
-    document.getElementById("date").innerHTML = `${date} ${yearMonths[month]} ${year}`;
-    document.getElementById("hour").innerHTML = `${hour}:${min}`;
-    document.getElementById("moment").innerHTML = dayMoment;
+    document.getElementById("day").innerHTML = day;
+    document.getElementById("date").innerHTML = defdate(now);
+    document.getElementById("time").innerHTML = defTime(now);
+    document.getElementById("moment").innerHTML = defMoment(now);
 }
+function defdate(date) {
+    var options = {day: "numeric", month: "long", year:"numeric"};
+    return date.toLocaleDateString(dateFormat, options);
+}
+function defTime(date) {
+    // format display of time
+
+    var hour = date.getHours(), minute = date.getMinutes(), second = date.getSeconds();
+    var temp = "" + ((hour > 12) ? hour - 12 : hour);
+
+    if (hour == 0) { temp = "12"; }
+    if (second > 30) { minute += 1; }
+    temp += ((minute < 10) ? ":0" : ":") + minute;
+    // temp += ((hour >= 12) ? " pm" : " am");
+    return temp;
+}
+function defMoment(date) {
+    // day moment definition
+
+    var hour = date.getHours();
+    if (hour < 9) { return dayMoments[0]; }
+    else if (hour < 12) { return dayMoments[1]; }
+    else if (hour < 13) { return dayMoments[2]; }
+    else if (hour < 18) { return dayMoments[3]; }
+    else { return dayMoments[4]; }
+}
+
+/**
+ * Messages composition and display
+ */
 
 function handleClientLoad() {
     // Loads the API's client and auth2 modules
     // then calls the initClient function
     gapi.load('client:auth2', initClient);
 }
-
 function initClient() {
     //Initializes the API client library (crendentials from CoolDashBord developper Console)
     //then sets up sign-in state listeners
@@ -65,7 +80,6 @@ function initClient() {
         appendPre(JSON.stringify(error, null, 2));
     });
 }
-
 function dispAfterSignIn(isSignedIn) {
     //     // insure the first signin, then only display the list of messages
     if (!isSignedIn) {
@@ -74,14 +88,11 @@ function dispAfterSignIn(isSignedIn) {
         loopMessages();
     }
 }
-
 function loopMessages() {
     const fetchInterval = 5 * 60000; // Messages refersh interval, convert min into ms
     dispMessages();
     const createClock = setInterval(dispMessages, fetchInterval);
 }
-
-
 function dispMessages() {
 
     // variable required to get the active events
@@ -111,7 +122,7 @@ function dispMessages() {
     });
 }
 
-
+// Make an array with the moments in 3 languages
 // events is an array of objects. try to sort by endTime (cannot use endTime in the list)
 // controler les overflow (si pas de place sur la page)
 // Attention à mettre à jour les token
