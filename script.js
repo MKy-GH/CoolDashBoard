@@ -81,7 +81,7 @@ function initClient() {
         discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
         scope: "https://www.googleapis.com/auth/calendar.events.readonly",
         uxMode: 'redirect',
-        redirectUri: "https://mky-gh.github.io/CoolDashBoard/"
+        redirectUri: "https://mky-gh.github.io/CoolDashBoard"
     }).then(function () {
         GoogleAuth = gapi.auth2.getAuthInstance();
 
