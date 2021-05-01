@@ -86,7 +86,7 @@ function initClient() {
         dispAfterSignIn(GoogleAuth.isSignedIn.get()); // check signin and start display
 
     }, function (error) {
-        alarm(JSON.stringify(error, null, 2));
+        alert(JSON.stringify(error, null, 2));
     });
 }
 function dispAfterSignIn(isSignedIn) {
