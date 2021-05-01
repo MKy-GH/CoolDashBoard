@@ -52,7 +52,7 @@ function dispHeader() {
         };
         const navLang = navigator.language.slice(0, 2);
         var lang = (navLang in momentDic) ? navLang : "en"; // en as default language
-        
+
         var hour = date.getHours();
         if (hour < 9) { return momentDic[lang][0]; }
         else if (hour < 12) { return momentDic[lang][1]; }
@@ -121,6 +121,8 @@ function dispMessages() {
         var events = response.result.items;  // MKy: The array of Event-objects
         document.getElementById("messages").innerHTML = "";
 
+        events.reverse();  // cause orderBy endtime doesn't exist.
+
         if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
                 var para = document.createElement("P");
@@ -131,10 +133,9 @@ function dispMessages() {
     });
 }
 
-// events is an array of objects. try to sort by endTime (cannot use endTime in the list)
-// controler les overflow (si pas de place sur la page)
 // Attention à mettre à jour les token
 // inverser les couleurs jour et nuit ou plus fréquent pour protéger l'écran
+// push avant de pouvoir ajouter les images (sinon elles seront downloadés bcp)
 // plus tard : utiliser le display:grid calendrier en haut à droite, gestion des langues et des photos, de la parole
 
 // voir comment programmer ouverture en full screen
