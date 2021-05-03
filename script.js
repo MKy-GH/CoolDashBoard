@@ -45,16 +45,16 @@ function dispHeader() {
         // day moment definition
 
         const momentDic = {
-            //      0-8             8-12         12-13          13-18           18-24
+            //      0-6             6-12         12-13          13-18           18-24
             "fr": ["du matin", "de l'avant-midi", "midi", "de l'après-midi", "du soir"],
-            "de": ["Morgen", "Vormittag", "Mittag", "Nachmittag", "Abend"],
+            "de": ["nachts", "vormittags", "mittags", "nachmittags", "abends"],
             "en": ["AM", "AM", "PM", "PM", "PM"]
         };
         const navLang = navigator.language.slice(0, 2);
         var lang = (navLang in momentDic) ? navLang : "en"; // en as default language
 
         var hour = date.getHours();
-        if (hour < 9) { return momentDic[lang][0]; }
+        if (hour < 6) { return momentDic[lang][0]; }
         else if (hour < 12) { return momentDic[lang][1]; }
         else if (hour < 13) { return momentDic[lang][2]; }
         else if (hour < 18) { return momentDic[lang][3]; }

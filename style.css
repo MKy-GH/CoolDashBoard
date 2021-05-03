@@ -25,25 +25,23 @@ header > div {
 }
 
 #day, #time {
-    font-size: 9vh;
-    /* 1vh = 1% of the viewport height */
+    font-size: 9vh;     /* 9vh = 9% of the viewport height */
     text-transform: uppercase;
-    padding: 1.2vh;
-      /* keep margins and paddings in childs */
+    padding: 1.2vh;     /* keep margins and paddings in childs */
 }
 
 #day, #date {
-    background-color: darkblue;
-    color: wheat;
+    background-color: darkblue;     /* darkblue */
+    color: wheat;                   /* wheat */
 }
 
 #time, #moment {
-    background-color: wheat;
-    color: darkblue;
+    background-color: wheat;        /* wheat */
+    color: darkblue;                /* darkblue */
 }
 
 #date, #moment {
-    font-size: 4vh;
+    font-size: 4.5vh;
     padding: 1.2vh;
 }
 
