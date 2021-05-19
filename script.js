@@ -46,7 +46,7 @@ function dispHeader() {
 
         const momentDic = {
             //      0-6             6-12         12-13          13-18           18-24
-            "fr": ["du matin", "de l'avant-midi", "midi", "de l'après-midi", "du soir"],
+            "fr": ["du matin", "avant-midi", "midi", "après-midi", "du soir"],
             "de": ["nachts", "vormittags", "mittags", "nachmittags", "abends"],
             "en": ["AM", "AM", "PM", "PM", "PM"]
         };

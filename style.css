@@ -56,20 +56,25 @@ main {
 }
 
 /* Start of attachment case layout */
+
 /* give the section part twice width than the aside one */
 
 main {
     display: flex;
 }
+
 main>section {
     flex: 2;
 }
+
 main>aside {
     flex: 1;
+    align-self: center;
+    padding-right: 1vw;
+    text-align: center;
 }
 
 /* end of attachment case layout */
-
 
 #messages {
     font-size: 4vw;
@@ -77,13 +82,9 @@ main>aside {
     padding-right: 3vw;
 }
 
-#attImage {
-    margin: 15vh 1vw 0 0;
-}
 
-#attImage>figcaption {
+figcaption {
     padding-top: 1vh;
-    text-align: center;
     font-size: 2.5vh;
 }
 
