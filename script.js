@@ -80,8 +80,8 @@ function initClient() {
         clientId: '852314254764-osbdrq5dg727tm16vh9n1ahcsr4h9ieo.apps.googleusercontent.com',
         discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
         scope: "https://www.googleapis.com/auth/calendar.events.readonly",
-        uxMode: 'redirect',
-        redirectUri: "https://cool.el-khoury.ch"
+        // uxMode: 'redirect',
+        // redirectUri: "https://cool.el-khoury.ch"
         // redirectUri: "https://mky-gh.github.io/CoolDashBoard"
     }).then(function () {
         GoogleAuth = gapi.auth2.getAuthInstance();
@@ -124,12 +124,13 @@ function dispMessages() {
         var events = response.result.items;  // MKy: The array of Event-objects
         document.getElementById("messages").innerHTML = "";
 
-        events.reverse();  // cause orderBy endtime doesn't exist.
+        events.reverse();  // because orderBy endtime doesn't exist.
 
         if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
                 var para = document.createElement("P");
                 para.innerHTML = events[i].summary;
+                console.log(events[i]);
                 document.getElementById("messages").appendChild(para);
             }
         }
