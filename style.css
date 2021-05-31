@@ -45,21 +45,15 @@ header>div:last-child {
     word-spacing: 1em;
 }
 
-/*************************** 
+/*********************************************
 /    Main part 
-/**************************/
+/ Flex is not used when there is no pictures
+/********************************************/
 
 main {
     height: 75vh;
     background-color: black;
     color: wheat;
-}
-
-/* Start of attachment case layout */
-
-/* give the section part twice width than the aside one */
-
-main {
     display: flex;
 }
 
@@ -73,8 +67,6 @@ main>aside {
     padding-right: 1vw;
     text-align: center;
 }
-
-/* end of attachment case layout */
 
 #messages {
     font-size: 4vw;

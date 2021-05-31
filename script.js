@@ -67,6 +67,30 @@ function dispHeader() {
  * Messages composition and display
  */
 
+// provisoire button
+const btn = document.querySelector('button');
+btn.onclick = function () {
+    var myMain = document.getElementsByTagName("main");
+    if (btn.textContent == "A") {
+        var asd = document.createElement("aside");
+        var photo = document.createElement("img");
+        var capt = document.createElement("figcaption");
+        photo.setAttribute("src", "Jubilaires.jpg");
+        photo.setAttribute("width", "100%");   
+        capt.innerHTML = "Mario et Véronique";     
+        asd.appendChild(photo);
+        asd.appendChild(capt);
+        myMain[0].appendChild(asd);
+        btn.textContent = "B";
+    } else {
+        if (myMain[0].hasChildNodes()) {
+            myMain[0].removeChild(myMain[0].lastChild);
+            btn.textContent = "A";
+        }
+    }
+}
+// end provisoire button
+
 function handleClientLoad() {
     // Loads the API's client and auth2 modules
     // then calls the initClient function
@@ -130,18 +154,18 @@ function dispMessages() {
             for (i = 0; i < events.length; i++) {
                 var para = document.createElement("P");
                 para.innerHTML = events[i].summary;
-                console.log(events[i]);
+                console.log(events[i]);  // provisional for test purposes
                 document.getElementById("messages").appendChild(para);
             }
         }
     });
 }
 
+// replace the static image with the one in Bonjour "event", when pressing the button
+// replace button pressing with checking for the presence of attachment (make it clean in case of error)
+
 // Attention à mettre à jour les token
-// inverser les couleurs jour et nuit ou plus fréquent pour protéger l'écran
-// push avant de pouvoir ajouter les images (sinon elles seront downloadés bcp)
-// plus tard : utiliser le display:grid calendrier en haut à droite, gestion des langues et des photos, de la parole
+// push pour les images (sinon elles seront downloadés bcp)
 
 // voir comment programmer ouverture en full screen
 // désactiver screen saver (mais penser à protéger l'écran)
-// DOM Events ?
