@@ -67,6 +67,9 @@ function dispHeader() {
  * Messages composition and display
  */
 
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 // provisoire button
 const btn = document.querySelector('button');
 btn.onclick = function () {
@@ -75,21 +78,28 @@ btn.onclick = function () {
         var asd = document.createElement("aside");
         var photo = document.createElement("img");
         var capt = document.createElement("figcaption");
+        
         photo.setAttribute("src", "Jubilaires.jpg");
-        photo.setAttribute("width", "100%");   
-        capt.innerHTML = "Mario et Véronique";     
+        // photo.setAttribute("src", "https://drive.google.com/file/d/16aVBpQN3NgH3-Cyo6WGt0zxcGF5WHd1o/view?usp=drive_web");
+
+        photo.setAttribute("width", "100%");
+        capt.innerHTML = "Mario et Véronique";
+        asd.id = "myAside";
         asd.appendChild(photo);
         asd.appendChild(capt);
+
         myMain[0].appendChild(asd);
         btn.textContent = "B";
     } else {
-        if (myMain[0].hasChildNodes()) {
-            myMain[0].removeChild(myMain[0].lastChild);
+        if ((asd = document.getElementById("myAside"))) {
+            asd.parentNode.removeChild(asd);
             btn.textContent = "A";
         }
     }
 }
 // end provisoire button
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 function handleClientLoad() {
     // Loads the API's client and auth2 modules
@@ -161,7 +171,12 @@ function dispMessages() {
     });
 }
 
-// replace the static image with the one in Bonjour "event", when pressing the button
+// STATUS : 
+// dynamically changing the page layout to display a local image is functionnal using the button (see highlighted button section above)
+// however impossible to display the source img on google drive (CORB security error) !
+
+// NEXT :
+// find a way to display the url image (possible without using the drive API?), keeping the button
 // replace button pressing with checking for the presence of attachment (make it clean in case of error)
 
 // Attention à mettre à jour les token
