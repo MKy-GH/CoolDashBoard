@@ -78,9 +78,11 @@ btn.onclick = function () {
         var asd = document.createElement("aside");
         var photo = document.createElement("img");
         var capt = document.createElement("figcaption");
-        
-        photo.setAttribute("src", "Jubilaires.jpg");
-        // photo.setAttribute("src", "https://drive.google.com/file/d/16aVBpQN3NgH3-Cyo6WGt0zxcGF5WHd1o/view?usp=drive_web");
+        var fileId = "1gVy1y_SydXf0qYh4hPDwcdEc4PzS23ke";
+        // var imgSrc = "https://drive.google.com/uc?export=download&id=" + fileId;
+        var imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
+        photo.setAttribute("src", imgSrc);
+        // id=16aVBpQN3NgH3-Cyo6WGt0zxcGF5WHd1o c'est l'id de la photo avec véro mais volumineuse
 
         photo.setAttribute("width", "100%");
         capt.innerHTML = "Mario et Véronique";
@@ -172,12 +174,10 @@ function dispMessages() {
 }
 
 // STATUS : 
-// dynamically changing the page layout to display a local image is functionnal using the button (see highlighted button section above)
-// however impossible to display the source img on google drive (CORB security error) !
+// OK changing the page layout ot display drive image, but using the button (see highlighted button section above)
 
 // NEXT :
-// find a way to display the url image (possible without using the drive API?), keeping the button
-// replace button pressing with checking for the presence of attachment (make it clean in case of error)
+// replace button pressing with checking for the presence of attachment AND of mimeType "image..."
 
 // Attention à mettre à jour les token
 // push pour les images (sinon elles seront downloadés bcp)
