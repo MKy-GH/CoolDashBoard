@@ -67,42 +67,6 @@ function dispHeader() {
  * Messages composition and display
  */
 
-
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-// provisoire button
-const btn = document.querySelector('button');
-btn.onclick = function () {
-    var myMain = document.getElementsByTagName("main");
-    if (btn.textContent == "A") {
-        var asd = document.createElement("aside");
-        var photo = document.createElement("img");
-        var capt = document.createElement("figcaption");
-        var fileId = "1gVy1y_SydXf0qYh4hPDwcdEc4PzS23ke";
-        // var imgSrc = "https://drive.google.com/uc?export=download&id=" + fileId;
-        var imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
-        photo.setAttribute("src", imgSrc);
-        // id=16aVBpQN3NgH3-Cyo6WGt0zxcGF5WHd1o c'est l'id de la photo avec véro mais volumineuse
-
-        photo.setAttribute("width", "100%");
-        capt.innerHTML = "Mario et Véronique";
-        asd.id = "myAside";
-        asd.appendChild(photo);
-        asd.appendChild(capt);
-
-        myMain[0].appendChild(asd);
-        btn.textContent = "B";
-    } else {
-        if ((asd = document.getElementById("myAside"))) {
-            asd.parentNode.removeChild(asd);
-            btn.textContent = "A";
-        }
-    }
-}
-// end provisoire button
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
 function handleClientLoad() {
     // Loads the API's client and auth2 modules
     // then calls the initClient function
@@ -154,30 +118,58 @@ function dispMessages() {
         'orderBy': 'startTime',
         'showDeleted': false,
         'singleEvents': true,
-        'timeMin': tMin.toISOString(), // mky: Date has to be an object with new
+        'timeMin': tMin.toISOString(), // Date has to be an object with new
         'timeMax': tMax.toISOString(),
     }).then(function (response) {
-        var events = response.result.items;  // MKy: The array of Event-objects
-        document.getElementById("messages").innerHTML = "";
-
+        var noImage = 1;
+        var events = response.result.items;  // The array of Event-objects
         events.reverse();  // because orderBy endtime doesn't exist.
 
+        // initialisation of messages and aside
+        document.getElementById("messages").innerHTML = "";
+        if ((asd = document.getElementById("myAside"))) {  //not good practice the "=", but compact
+            asd.parentNode.removeChild(asd);
+        }
+        // screening and handling events
         if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
-                var para = document.createElement("P");
-                para.innerHTML = events[i].summary;
-                console.log(events[i]);  // provisional for test purposes
-                document.getElementById("messages").appendChild(para);
+                if (!events[i].attachments) {
+                    var para = document.createElement("P");
+                    para.innerHTML = events[i].summary;
+                    document.getElementById("messages").appendChild(para);
+                }
+                else if (noImage) {
+                    var attachType = events[i].attachments[0].mimeType;
+                    if (attachType.indexOf("image") !== -1) {
+                        console.log(events[i]);  // provisional for test purposes
+                        var myMain = document.getElementsByTagName("main");
+                        var asd = document.createElement("aside");
+                        var photo = document.createElement("img");
+                        var capt = document.createElement("figcaption");
+                        var fileId = events[i].attachments[0].fileId;
+                        var imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
+                        
+                        asd.id = "myAside";
+                        photo.setAttribute("src", imgSrc);
+                        capt.innerHTML = events[i].summary;
+                        asd.appendChild(photo);
+                        asd.appendChild(capt);
+                        myMain[0].appendChild(asd);
+                        noImage = 0;
+                    }
+
+                }
             }
         }
     });
 }
 
 // STATUS : 
-// OK changing the page layout ot display drive image, but using the button (see highlighted button section above)
+// OK changing the page layout to display drive image if attachment and of type image
+// added the img tag in the CSS, with max hight to avoid ovelap with Header. However the width is not ok 
 
 // NEXT :
-// replace button pressing with checking for the presence of attachment AND of mimeType "image..."
+// check Mimetype and test with multiple events with images. then remove the console.log 
 
 // Attention à mettre à jour les token
 // push pour les images (sinon elles seront downloadés bcp)
