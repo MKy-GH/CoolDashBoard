@@ -141,9 +141,10 @@ function dispMessages() {
                 else if (noImage) {
                     var attachType = events[i].attachments[0].mimeType;
                     if (attachType.indexOf("image") !== -1) {
-                        console.log(events[i]);  // provisional for test purposes
+                        // console.log(events[i]);
                         var myMain = document.getElementsByTagName("main");
                         var asd = document.createElement("aside");
+                        var fig = document.createElement("figure");   
                         var photo = document.createElement("img");
                         var capt = document.createElement("figcaption");
                         var fileId = events[i].attachments[0].fileId;
@@ -152,8 +153,10 @@ function dispMessages() {
                         asd.id = "myAside";
                         photo.setAttribute("src", imgSrc);
                         capt.innerHTML = events[i].summary;
-                        asd.appendChild(photo);
-                        asd.appendChild(capt);
+                        fig.appendChild(photo); 
+                        fig.appendChild(capt); 
+
+                        asd.appendChild(fig);
                         myMain[0].appendChild(asd);
                         noImage = 0;
                     }
@@ -165,11 +168,12 @@ function dispMessages() {
 }
 
 // STATUS : 
-// OK changing the page layout to display drive image if attachment and of type image
-// added the img tag in the CSS, with max hight to avoid ovelap with Header. However the width is not ok 
+// OK changing the page layout to display the attachment image (if any) and its caption.
+// tried to find good compromise to optimise image size without overlaps 
 
 // NEXT :
-// check Mimetype and test with multiple events with images. then remove the console.log 
+// optimise font size to take into account both vh and vw
+// complement the user guide of Mougahed. add the 5min resfresh information
 
 // Attention à mettre à jour les token
 // push pour les images (sinon elles seront downloadés bcp)
