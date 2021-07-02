@@ -46,7 +46,7 @@ function dispHeader() {
 
         const momentDic = {
             //      0-6             6-12         12-13          13-18           18-24
-            "fr": ["du matin", "de l'avant-midi", "midi", "de l'après-midi", "du soir"],
+            "fr": ["du matin", "avant-midi", "midi", "après-midi", "du soir"],
             "de": ["nachts", "vormittags", "mittags", "nachmittags", "abends"],
             "en": ["AM", "AM", "PM", "PM", "PM"]
         };
@@ -80,8 +80,8 @@ function initClient() {
         clientId: '852314254764-osbdrq5dg727tm16vh9n1ahcsr4h9ieo.apps.googleusercontent.com',
         discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
         scope: "https://www.googleapis.com/auth/calendar.events.readonly",
-        uxMode: 'redirect',
-        redirectUri: "https://cool.el-khoury.ch"
+        // uxMode: 'redirect',
+        // redirectUri: "https://cool.el-khoury.ch"
         // redirectUri: "https://mky-gh.github.io/CoolDashBoard"
     }).then(function () {
         GoogleAuth = gapi.auth2.getAuthInstance();
@@ -118,29 +118,57 @@ function dispMessages() {
         'orderBy': 'startTime',
         'showDeleted': false,
         'singleEvents': true,
-        'timeMin': tMin.toISOString(), // mky: Date has to be an object with new
+        'timeMin': tMin.toISOString(), // Date has to be an object with new
         'timeMax': tMax.toISOString(),
     }).then(function (response) {
-        var events = response.result.items;  // MKy: The array of Event-objects
+        var noImage = 1;
+        var events = response.result.items;  // The array of Event-objects
+        events.reverse();  // because orderBy endtime doesn't exist.
+
+        // initialisation of messages and aside
         document.getElementById("messages").innerHTML = "";
-
-        events.reverse();  // cause orderBy endtime doesn't exist.
-
+        if ((asd = document.getElementById("myAside"))) {  //not good practice the "=", but compact
+            asd.parentNode.removeChild(asd);
+        }
+        // screening and handling events
         if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
-                var para = document.createElement("P");
-                para.innerHTML = events[i].summary;
-                document.getElementById("messages").appendChild(para);
+                if (!events[i].attachments) {
+                    var para = document.createElement("P");
+                    para.innerHTML = events[i].summary;
+                    document.getElementById("messages").appendChild(para);
+                }
+                else if (noImage) {
+                    var attachType = events[i].attachments[0].mimeType;
+                    if (attachType.indexOf("image") !== -1) {
+                        // console.log(events[i]);
+                        var myMain = document.getElementsByTagName("main");
+                        var asd = document.createElement("aside");
+                        var fig = document.createElement("figure");   
+                        var photo = document.createElement("img");
+                        var capt = document.createElement("figcaption");
+                        var fileId = events[i].attachments[0].fileId;
+                        var imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
+                        
+                        asd.id = "myAside";
+                        photo.setAttribute("src", imgSrc);
+                        capt.innerHTML = events[i].summary;
+                        fig.appendChild(photo); 
+                        fig.appendChild(capt); 
+                        asd.appendChild(fig);
+                        myMain[0].appendChild(asd);
+                        noImage = 0;
+                    }
+
+                }
             }
         }
     });
 }
 
-// Attention à mettre à jour les token
-// inverser les couleurs jour et nuit ou plus fréquent pour protéger l'écran
-// push avant de pouvoir ajouter les images (sinon elles seront downloadés bcp)
-// plus tard : utiliser le display:grid calendrier en haut à droite, gestion des langues et des photos, de la parole
+// STATUS : 
+// the branch Photo is ready with the possible display of picture/caption and ajusted font sizing.
 
-// voir comment programmer ouverture en full screen
-// désactiver screen saver (mais penser à protéger l'écran)
-// DOM Events ?
+// NEXT :
+// - complement the user guide 
+// - explore a new push branch for the images 
