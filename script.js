@@ -80,9 +80,8 @@ function initClient() {
         clientId: '852314254764-osbdrq5dg727tm16vh9n1ahcsr4h9ieo.apps.googleusercontent.com',
         discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
         scope: "https://www.googleapis.com/auth/calendar.events.readonly",
-        // uxMode: 'redirect',
-        // redirectUri: "https://cool.el-khoury.ch"
-        // redirectUri: "https://mky-gh.github.io/CoolDashBoard"
+        uxMode: 'redirect',
+        // redirectUri: "https://cool.el-khoury.ch" // force cet url, au lieu de prendre la page actuelle
     }).then(function () {
         GoogleAuth = gapi.auth2.getAuthInstance();
 
@@ -144,17 +143,17 @@ function dispMessages() {
                         // console.log(events[i]);
                         var myMain = document.getElementsByTagName("main");
                         var asd = document.createElement("aside");
-                        var fig = document.createElement("figure");   
+                        var fig = document.createElement("figure");
                         var photo = document.createElement("img");
                         var capt = document.createElement("figcaption");
                         var fileId = events[i].attachments[0].fileId;
                         var imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
-                        
+
                         asd.id = "myAside";
                         photo.setAttribute("src", imgSrc);
                         capt.innerHTML = events[i].summary;
-                        fig.appendChild(photo); 
-                        fig.appendChild(capt); 
+                        fig.appendChild(photo);
+                        fig.appendChild(capt);
                         asd.appendChild(fig);
                         myMain[0].appendChild(asd);
                         noImage = 0;
@@ -166,9 +165,9 @@ function dispMessages() {
     });
 }
 
-// STATUS : 
+// STATUS :
 // the branch Photo is ready with the possible display of picture/caption and ajusted font sizing.
 
 // NEXT :
-// - complement the user guide 
-// - explore a new push branch for the images 
+// - complement the user guide
+// - explore a new push branch for the images
