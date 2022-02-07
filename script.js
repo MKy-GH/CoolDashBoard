@@ -36,9 +36,7 @@ function dispHeader() {
         var temp = "" + ((hour > 12) ? hour - 12 : hour);
 
         if (hour == 0) { temp = "12"; }
-        if (second > 30) { minute += 1; }
         temp += ((minute < 10) ? ":0" : ":") + minute;
-        // temp += ((hour >= 12) ? " pm" : " am");
         return temp;
     }
     function defMoment(date) {
