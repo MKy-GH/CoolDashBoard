@@ -73,7 +73,7 @@ function handleClientLoad() {
     gapi.load('client:auth2', initClient);
 }
 function initClient() {
-    //Initializes the API client library (crendentials from CoolDashBord developper Console)
+    //Initializes the API client library (crendentials from CoolDashBoard developper Console)
     //then sets up sign-in state listeners
     gapi.client.init({
         apiKey: 'AIzaSyBDcPRIKUneAEh1OzqO8i0TfU_fzOOMbzM',
@@ -100,7 +100,7 @@ function dispAfterSignIn(isSignedIn) {
     }
 }
 function loopMessages() {
-    const fetchInterval = 5 * 60000; // Messages refersh interval, convert min into ms
+    const fetchInterval = 1 /*min*/ * 60000; // Messages refersh interval, convert min into ms
     dispMessages();
     const createClock = setInterval(dispMessages, fetchInterval);
 }
@@ -120,6 +120,12 @@ function dispMessages() {
         'timeMin': tMin.toISOString(), // Date has to be an object with new
         'timeMax': tMax.toISOString(),
     }).then(function (response) {
+
+        if(response.status != 200){
+            alert(`Status ${response.status} : ${response.statusText}`);
+            return;
+        }
+
         var noImage = 1;
         var events = response.result.items;  // The array of Event-objects
         events.reverse();  // because orderBy endtime doesn't exist.
