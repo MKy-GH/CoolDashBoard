@@ -1,16 +1,10 @@
-
-
-var GoogleAuth; // shortcut for API
-
 /**
  * Header composition and display
  */
-loopHeader();
-
-function loopHeader() {
-    const headInterval = 1 * 60000; // Header refersh interval in minutes
+function initHeader() {
     dispHeader();
-    headerIntervalID = setInterval(dispHeader, headInterval);
+    const headInterval = 1 * 60000; // Header refersh interval in minutes
+    var headerIntervalID = setInterval(dispHeader, headInterval);
 }
 function dispHeader() {
     // handle the Header part of the page
@@ -59,54 +53,21 @@ function dispHeader() {
         else { return momentDic[lang][4]; }
     }
 }
-
+/* ************************************************************************** */
 
 /**
  * Messages composition and display
  */
-
-function handleClientLoad() {
-    // Loads the API's client and auth2 modules
-    // then calls the initClient function
-    gapi.load('client:auth2', initClient);
-}
-function initClient() {
-    //Initializes the API client library (crendentials from CoolDashBoard developper Console)
-    //then sets up sign-in state listeners
-    gapi.client.init({
-        apiKey: 'AIzaSyBDcPRIKUneAEh1OzqO8i0TfU_fzOOMbzM',
-        clientId: '852314254764-osbdrq5dg727tm16vh9n1ahcsr4h9ieo.apps.googleusercontent.com',
-        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-        scope: "https://www.googleapis.com/auth/calendar.events.readonly",
-        uxMode: 'redirect',
-        // redirectUri: "https://cool.el-khoury.ch" // force cet url, au lieu de prendre la page actuelle
-    }).then(function () {
-        GoogleAuth = gapi.auth2.getAuthInstance();
-
-        dispAfterSignIn(GoogleAuth.isSignedIn.get()); // check signin and start display
-
-    }, function (error) {
-        alert(JSON.stringify(error, null, 2));
-    });
-}
-function dispAfterSignIn(isSignedIn) {
-    //     // insure the first signin, then only display the list of messages
-    if (!isSignedIn) {
-        GoogleAuth.signIn().then(loopMessages);
-    } else {
-        loopMessages();
-    }
-}
-function loopMessages() {
-    const fetchInterval = 1 /*min*/ * 60000; // Messages refersh interval, convert min into ms
+function initMessage() {
     dispMessages();
-    const createClock = setInterval(dispMessages, fetchInterval);
+    const messagesInterval = 0.1 /*min*/ * 60000; // Messages refersh interval, convert min into ms
+    var messagesIntervalID = setInterval(dispMessages, messagesInterval);
 }
 function dispMessages() {
 
     // variable required to get the active events
-    var tMin = new Date();
-    var tMax = new Date();
+    var tMin = new Date(); // now
+    var tMax = new Date(); // now
     tMax.setMinutes(tMax.getMinutes() + 1); // timeMax has to be > timeMin for the GAPI
 
     gapi.client.calendar.events.list({
@@ -118,11 +79,8 @@ function dispMessages() {
         'timeMin': tMin.toISOString(), // Date has to be an object with new
         'timeMax': tMax.toISOString(),
     }).then(function (response) {
-
-        if(response.status != 200){
-            alert(`Status ${response.status} : ${response.statusText}`);
-            return;
-        }
+        /* if request is successful */
+        // console.log(response);
 
         var noImage = 1;
         var events = response.result.items;  // The array of Event-objects
@@ -166,7 +124,94 @@ function dispMessages() {
                 }
             }
         }
+    }, function (reason){
+        /* if request failed */
+        console.error(reason);
     });
+}
+
+/* ************************************************************************** */
+
+/**
+ * Global init, to start the auto refresh elements
+ */
+function initBoard(){
+    initHeader();
+    initMessage();
+}
+
+/* ************************************************************************** */
+
+/**
+ * Google Authentification
+ */
+const apiKey = 'AIzaSyBDcPRIKUneAEh1OzqO8i0TfU_fzOOMbzM';
+const clientId = '852314254764-osbdrq5dg727tm16vh9n1ahcsr4h9ieo.apps.googleusercontent.com';
+const scope = "https://www.googleapis.com/auth/calendar.events.readonly";
+const discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+/* Function called every 45 min */
+function refreshToken(){
+    gapi.auth.authorize({
+        client_id: clientId,
+        scope: scope,
+        immediate: true
+    }).then(function (response) {
+        console.log(response);
+    }, function (reason){
+        console.error(reason);
+    });
+}
+
+/* Function called once Google Auth module is loaded */
+function initGoogle() {
+
+    // Initialize the API client library
+    gapi.client.init({
+        apiKey: apiKey,
+        clientId: clientId,
+        discoveryDocs: discoveryDocs,
+        scope: scope,
+        uxMode: 'redirect', // redirectUri: "https://cool.el-khoury.ch" // commenté car empêche de servir le site sur localhost
+    }).then(function (response) {
+        /* if API client init succeeded */
+        // console.log(response);
+
+        // Get Authenticator object from Google
+        var GoogleAuth = gapi.auth2.getAuthInstance();
+
+        // Continue to Dashboard initialization
+        if (GoogleAuth.isSignedIn.get()) {
+            // Dashboard was just opened, but a previously authorized Google Account is already connected in this browser session.
+            initBoard();
+        } else {
+            // Dashboard was just opened, but no Google Account was previously connected (or authorized) in this browser session.
+            GoogleAuth.signIn().then(function(){
+                initBoard();
+            });
+        }
+
+        // Monitor user login status to prevent accidental sign out while Dashboard is open (parallel process).
+        GoogleAuth.isSignedIn.listen(function () {
+            if (!GoogleAuth.isSignedIn.get()) {
+                // Force reconnect in case of accidental sign out.
+                GoogleAuth.signIn();
+            }
+        });
+    },
+    function (reason) {
+        /* if Google Auth failed */
+        console.error(reason)
+    });
+
+    const tokenInterval = 45 /*min*/ * 60000;
+    var tokenIntervalID = setInterval(refreshToken, tokenInterval);
+}
+
+/* Function called automatically once Google API JavaScript file is downloaded */
+function handleClientLoad() {
+    // Loads auth2 modules then calls the initClient function
+    gapi.load('client:auth2', initGoogle);
 }
 
 // STATUS :
