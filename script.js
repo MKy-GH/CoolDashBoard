@@ -60,7 +60,7 @@ function dispHeader() {
  */
 function initMessage() {
     dispMessages();
-    const messagesInterval = 0.1 /*min*/ * 60000; // Messages refersh interval, convert min into ms
+    const messagesInterval = 1 /*min*/ * 60000; // Messages refersh interval, convert min into ms
     var messagesIntervalID = setInterval(dispMessages, messagesInterval);
 }
 function dispMessages() {
