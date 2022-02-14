@@ -3,7 +3,7 @@
  */
 function initHeader() {
     dispHeader();
-    const headInterval = 1 * 60000; // Header refersh interval in minutes
+    const headInterval = 0.3 /*min*/ * 60000; // Header refersh interval in ms
     var headerIntervalID = setInterval(dispHeader, headInterval);
 }
 function dispHeader() {
@@ -25,9 +25,8 @@ function dispHeader() {
     }
     function defTime(date) {
         // format display of time
-
         var hour = date.getHours(), minute = date.getMinutes(), second = date.getSeconds();
-        var temp = "" + ((hour > 12) ? hour - 12 : hour);
+        var temp = "" + ((hour > 12) ? hour - 12 : hour); // force display in 12h (and not 24h)
 
         if (hour == 0) { temp = "12"; }
         temp += ((minute < 10) ? ":0" : ":") + minute;
@@ -60,7 +59,7 @@ function dispHeader() {
  */
 function initMessage() {
     dispMessages();
-    const messagesInterval = 1 /*min*/ * 60000; // Messages refersh interval, convert min into ms
+    const messagesInterval = 2 /*min*/ * 60000; // Messages refersh interval in ms
     var messagesIntervalID = setInterval(dispMessages, messagesInterval);
 }
 function dispMessages() {
@@ -125,8 +124,10 @@ function dispMessages() {
             }
         }
     }, function (reason){
-        /* if request failed */
-        console.error(reason);
+        /* if request failed for whatever error, start a signin process that refreshes automaticall the API token */
+        // console.log("Sylvain:");
+        // console.error(reason);
+        GoogleAuth.signIn();
     });
 }
 
@@ -150,18 +151,7 @@ const clientId = '852314254764-osbdrq5dg727tm16vh9n1ahcsr4h9ieo.apps.googleuserc
 const scope = "https://www.googleapis.com/auth/calendar.events.readonly";
 const discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 
-/* Function called every 45 min */
-function refreshToken(){
-    gapi.auth.authorize({
-        client_id: clientId,
-        scope: scope,
-        immediate: true
-    }).then(function (response) {
-        console.log(response);
-    }, function (reason){
-        console.error(reason);
-    });
-}
+var GoogleAuth; // defined as global, to be able to initiate a signIn when errors are received in dispMessages function 
 
 /* Function called once Google Auth module is loaded */
 function initGoogle() {
@@ -172,13 +162,14 @@ function initGoogle() {
         clientId: clientId,
         discoveryDocs: discoveryDocs,
         scope: scope,
-        uxMode: 'redirect', // redirectUri: "https://cool.el-khoury.ch" // commenté car empêche de servir le site sur localhost
+        uxMode: 'redirect', 
+        // redirectUri: "https://cool.el-khoury.ch" // commenté car empêche de servir le site sur localhost
     }).then(function (response) {
         /* if API client init succeeded */
         // console.log(response);
 
         // Get Authenticator object from Google
-        var GoogleAuth = gapi.auth2.getAuthInstance();
+        GoogleAuth = gapi.auth2.getAuthInstance();
 
         // Continue to Dashboard initialization
         if (GoogleAuth.isSignedIn.get()) {
@@ -191,6 +182,7 @@ function initGoogle() {
             });
         }
 
+    /* not needed anymore. The error handling added at the end of "dipsMessage" take care of the signout() problem too
         // Monitor user login status to prevent accidental sign out while Dashboard is open (parallel process).
         GoogleAuth.isSignedIn.listen(function () {
             if (!GoogleAuth.isSignedIn.get()) {
@@ -198,14 +190,12 @@ function initGoogle() {
                 GoogleAuth.signIn();
             }
         });
+        */
     },
     function (reason) {
         /* if Google Auth failed */
-        console.error(reason)
+        console.error(reason);
     });
-
-    const tokenInterval = 45 /*min*/ * 60000;
-    var tokenIntervalID = setInterval(refreshToken, tokenInterval);
 }
 
 /* Function called automatically once Google API JavaScript file is downloaded */
