@@ -2,7 +2,7 @@ html {
     font-family: Verdana, Arial, sans-serif;
 }
 
-body {
+* {
     margin: 0;
 }
 
@@ -11,19 +11,27 @@ body {
 /**************************/
 
 header {
-    height: 22vmin; /* using vmin is perfect for paysage (vmin=vh) and OK for portrait */
+    /* using vmin is perfect for paysage (vmin=vh) and OK for portrait */
+    height: 22vmin;
     display: flex;
-    text-align: center;
+}
+
+header>div {
+    /* equal width */
+    flex: 1;
+    /* content is also flex, but in a column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
 }
 
 header>div:first-child {
-    flex: 1;
     background-color: darkblue;
     color: wheat;
 }
 
 header>div:last-child {
-    flex: 1;
     background-color: wheat;
     color: darkblue;
 }
@@ -31,12 +39,10 @@ header>div:last-child {
 #day, #time {
     font-size: 9vmin;
     text-transform: uppercase;
-    padding: 1.2vmin;
 }
 
 #date, #moment {
     font-size: 4.5vmin;
-    padding: 1.2vmin;
 }
 
 #date {
@@ -65,10 +71,9 @@ main>aside {
     text-align: center;
 }
 
-#messages {
+#messages>p {
     font-size: calc(2vw + 2vh + 1vmin);
-    padding-left: 3vw;
-    padding-right: 3vw;
+    padding: 3vmin 3vmin 2vmin 3vmin;
 }
 
 figure {
@@ -90,7 +95,8 @@ footer {
     height: 3vh;
     background-color: black;
     color: wheat;
-    padding-right: 1vw;
+    padding-right: 2vw;
+    padding-bottom: 2vh;
     text-align: right;
     font-size: calc(8px + 0.3vh);
 }
