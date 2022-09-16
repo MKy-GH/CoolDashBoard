@@ -4,15 +4,13 @@
 function initHeader() {
     dispHeader();
     const headInterval = 0.3 /*min*/ * 60000; // Header refersh interval in ms
-    var headerIntervalID = setInterval(dispHeader, headInterval);
+    let headerIntervalID = setInterval(dispHeader, headInterval);
 }
 function dispHeader() {
     // handle the Header part of the page
-
-    // var dateFormat = "de-CH";  // for tests use navigator.language for production
-    var dateFormat = navigator.language;
-    var now = new Date();
-    var day = now.toLocaleDateString(dateFormat, { weekday: "long" });
+    const dateFormat = navigator.language;  //ex. en-US or de-CH
+    const now = new Date();  //a Date object
+    const day = now.toLocaleDateString(dateFormat, { weekday: "long" });
 
     document.getElementById("day").innerHTML = day;
     document.getElementById("date").innerHTML = defdate(now);
@@ -20,15 +18,15 @@ function dispHeader() {
     document.getElementById("moment").innerHTML = defMoment(now);
 
     function defdate(date) {
-        var options = { day: "numeric", month: "long", year: "numeric" };
+        const options = { day: "numeric", month: "long", year: "numeric" };
         return date.toLocaleDateString(dateFormat, options);
     }
     function defTime(date) {
         // format display of time
-        var hour = date.getHours(), minute = date.getMinutes(), second = date.getSeconds();
-        var temp = "" + ((hour > 12) ? hour - 12 : hour); // force display in 12h (and not 24h)
-
-        if (hour == 0) { temp = "12"; }
+        const hour = date.getHours(), minute = date.getMinutes(), second = date.getSeconds();
+        /* let temp = "" + ((hour > 12) ? hour - 12 : hour); 
+         if (hour == 0) { temp = "12"; } */ // force display in 12h (and not 24h)
+        let temp = hour;
         temp += ((minute < 10) ? ":0" : ":") + minute;
         return temp;
     }
@@ -36,20 +34,23 @@ function dispHeader() {
         // day moment definition
 
         const momentDic = {
-            //      0-6             6-12         12-13          13-18           18-24
+            "0": [6, 12, 13, 18, 24],  // end of hours range of each laps
             "fr": ["du matin", "avant-midi", "midi", "après-midi", "du soir"],
             "de": ["nachts", "vormittags", "mittags", "nachmittags", "abends"],
             "en": ["AM", "AM", "PM", "PM", "PM"]
         };
-        const navLang = navigator.language.slice(0, 2);
-        var lang = (navLang in momentDic) ? navLang : "en"; // en as default language
 
-        var hour = date.getHours();
-        if (hour < 6) { return momentDic[lang][0]; }
-        else if (hour < 12) { return momentDic[lang][1]; }
-        else if (hour < 13) { return momentDic[lang][2]; }
-        else if (hour < 18) { return momentDic[lang][3]; }
-        else { return momentDic[lang][4]; }
+        const navLang = navigator.language.slice(0, 2);
+        const lang = (navLang in momentDic) ? navLang : "en"; // en as default language
+        const hour = date.getHours();
+
+        const momentHours = momentDic['0'];
+        for (const momentHour of momentHours) {
+            if (hour < momentHour) {
+                return momentDic[lang][momentHours.indexOf(momentHour)];
+                break;
+            }
+        }
     }
 }
 /* ************************************************************************** */
@@ -60,7 +61,7 @@ function dispHeader() {
 function initMessage() {
     dispMessages();
     const messagesInterval = 2 /*min*/ * 60000; // Messages refersh interval in ms
-    var messagesIntervalID = setInterval(dispMessages, messagesInterval);
+    let messagesIntervalID = setInterval(dispMessages, messagesInterval);
 }
 function dispMessages() {
 
@@ -83,7 +84,6 @@ function dispMessages() {
 
         var noImage = 1;
         var events = response.result.items;  // The array of Event-objects
-        events.reverse();  // because orderBy endtime doesn't exist.
 
         // initialisation of messages and aside
         document.getElementById("messages").innerHTML = "";
@@ -92,38 +92,37 @@ function dispMessages() {
         }
         // screening and handling events
         if (events.length > 0) {
-            for (i = 0; i < events.length; i++) {
-                if (!events[i].attachments) {
-                    var para = document.createElement("P");
-                    para.innerHTML = events[i].summary;
+            for (const event of events) {
+                if (!event.attachments) {
+                    const para = document.createElement('p');
+                    para.innerHTML = event.summary;
                     document.getElementById("messages").appendChild(para);
                 }
                 else if (noImage) {
-                    var attachType = events[i].attachments[0].mimeType;
+                    const attachType = event.attachments[0].mimeType;
                     if (attachType.indexOf("image") !== -1) {
                         // console.log(events[i]);
-                        var myMain = document.getElementsByTagName("main");
-                        var asd = document.createElement("aside");
-                        var fig = document.createElement("figure");
-                        var photo = document.createElement("img");
-                        var capt = document.createElement("figcaption");
-                        var fileId = events[i].attachments[0].fileId;
-                        var imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
+                        const myMain = document.getElementsByTagName("main");
+                        const asd = document.createElement("aside");
+                        const fig = document.createElement("figure");
+                        const photo = document.createElement("img");
+                        const capt = document.createElement("figcaption");
+                        const fileId = event.attachments[0].fileId;
+                        const imgSrc = "https://drive.google.com/uc?id=" + fileId;  // otherwise try with uc?export=download&id=
 
                         asd.id = "myAside";
                         photo.setAttribute("src", imgSrc);
-                        capt.innerHTML = events[i].summary;
+                        capt.innerHTML = event.summary;
                         fig.appendChild(photo);
                         fig.appendChild(capt);
                         asd.appendChild(fig);
                         myMain[0].appendChild(asd);
                         noImage = 0;
                     }
-
                 }
             }
         }
-    }, function (reason){
+    }, function (reason) {
         /* if request failed for whatever error, start a signin process that refreshes automaticall the API token */
         // console.log("Sylvain:");
         // console.error(reason);
@@ -136,7 +135,7 @@ function dispMessages() {
 /**
  * Global init, to start the auto refresh elements
  */
-function initBoard(){
+function initBoard() {
     initHeader();
     initMessage();
 }
@@ -162,7 +161,7 @@ function initGoogle() {
         clientId: clientId,
         discoveryDocs: discoveryDocs,
         scope: scope,
-        uxMode: 'redirect', 
+        uxMode: 'redirect',
         // redirectUri: "https://cool.el-khoury.ch" // commenté car empêche de servir le site sur localhost
     }).then(function (response) {
         /* if API client init succeeded */
@@ -177,25 +176,25 @@ function initGoogle() {
             initBoard();
         } else {
             // Dashboard was just opened, but no Google Account was previously connected (or authorized) in this browser session.
-            GoogleAuth.signIn().then(function(){
+            GoogleAuth.signIn().then(function () {
                 initBoard();
             });
         }
 
-    /* not needed anymore. The error handling added at the end of "dipsMessage" take care of the signout() problem too
-        // Monitor user login status to prevent accidental sign out while Dashboard is open (parallel process).
-        GoogleAuth.isSignedIn.listen(function () {
-            if (!GoogleAuth.isSignedIn.get()) {
-                // Force reconnect in case of accidental sign out.
-                GoogleAuth.signIn();
-            }
-        });
-        */
+        /* not needed anymore. The error handling added at the end of "dipsMessage" take care of the signout() problem too
+            // Monitor user login status to prevent accidental sign out while Dashboard is open (parallel process).
+            GoogleAuth.isSignedIn.listen(function () {
+                if (!GoogleAuth.isSignedIn.get()) {
+                    // Force reconnect in case of accidental sign out.
+                    GoogleAuth.signIn();
+                }
+            });
+            */
     },
-    function (reason) {
-        /* if Google Auth failed */
-        console.error(reason);
-    });
+        function (reason) {
+            /* if Google Auth failed */
+            console.error(reason);
+        });
 }
 
 /* Function called automatically once Google API JavaScript file is downloaded */
